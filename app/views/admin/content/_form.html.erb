@@ -149,5 +149,23 @@
   </div>    
   </div>
 
+  <% if @is_admin %>
+  <div>
+    <h4><%= _("Merge Articles") %></h4>
+    <h2><%= @test3 %></h2>
+    <div class='class'>
+      <span>Article ID</span>
+      <%#= text_field 'article', 'merge_with', {:autocomplete => 'off', :style => 'width: 200px'} %>
+      <input id="merge_with" name="merge_with" placeholder="" size="30" style=" width: 200px" type="text" value="" />
+      <input id='save_dr' type="submit" value="<%= _('Merge') %>" name="article[merge]" />
+      <%# submit_tag(_("Merge"), {:class => 'btn'}) %>
+    </div>
+  </div>
+  <% end %>
+  
+  
+  
+  
+
 </div>
 

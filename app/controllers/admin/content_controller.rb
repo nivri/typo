@@ -140,12 +140,69 @@ class Admin::ContentController < Admin::BaseController
   def real_action_for(action); { 'add' => :<<, 'remove' => :delete}[action]; end
 
   def new_or_edit
+    
     id = params[:id]
     id = params[:article][:id] if params[:article] && params[:article][:id]
+    
     @article = Article.get_or_build_article(id)
     @article.text_filter = current_user.text_filter if current_user.simple_editor?
+    
+    if  params[:article] and params[:article][:merge] 
+      if params[:merge_with] and params[:merge_with] != '' and params[:merge_with] != id
+        article = Article.get_or_build_article(params[:merge_with])
+        @article.body += article.body
+        @article.save
+        
+        comms = Article.find(article.id).comments
+        comms.each do |c|
+          c.article_id = id
+          c.save
+        end
+        
+        article.destroy
+        
+        #flash[:notice] = "Achtung! Minen! Article: " + id + " Merge with: " + params[:merge_with] + s
+      else
+        flash[:notice] = 'Article ID for merging is not correct.'
+        #return
+        #render 'new'
+        
+        #require 'debugger'
+        #debugger
+        
+        # a = Article.new
+        # a.user_id = 1
+        # a.body = "Foo"
+        # a.title = "Zzz"
+        # a.save
+        # Article.create!({
+        #         :user_id => 1,
+        #         :body => 'article id 100',
+        #         :title => 'Article 1'})
+        
+        # Article.create!({
+        #         :id => 77,
+        #         :user_id => '1',
+        #         :body => 'article id 77',
+        #         :title => 'Article 77',
+        #         :state => 'published'})
+      end
+      redirect_to :action => 'index'
+      return
+    end
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
 
     @post_types = PostType.find(:all)
+    
     if request.post?
       if params[:article][:draft]
         get_fresh_or_existing_draft_for_article
@@ -158,6 +215,7 @@ class Admin::ContentController < Admin::BaseController
 
     @article.keywords = Tag.collection_to_string @article.tags
     @article.attributes = params[:article]
+    
     # TODO: Consider refactoring, because double rescue looks... weird.
         
     @article.published_at = DateTime.strptime(params[:article][:published_at], "%B %e, %Y %I:%M %p GMT%z").utc rescue Time.parse(params[:article][:published_at]).utc rescue nil
@@ -180,6 +238,11 @@ class Admin::ContentController < Admin::BaseController
     @images = Resource.images_by_created_at.page(params[:page]).per(10)
     @resources = Resource.without_images_by_filename
     @macros = TextFilter.macro_filters
+    
+    @test = false
+    @test2 = current_user.login
+    @is_admin = current_user.login == 'admin'
+    # @test3 = params[:article][:merge_with] if params[:article] and params[:article][:merge_with]
     render 'new'
   end
 
