@@ -417,20 +417,53 @@ class Article < Content
   end
   
   
-  def merge_with article_id
+  # def merge_with article_id
+  #   #article = Article.get_or_build_article(params[:merge_with])
+  #   article = Article.find(article_id)
+    
+  #   self.body = self.body + article.body
+  #   self.save
+    
+  #   comms = article.comments
+  #   comms.each do |c|
+  #     c.article_id = self.id
+  #     c.save
+  #   end
+    
+  #   article.destroy
+  # end
+  
+  def self.merge article1_id, article2_id
     #article = Article.get_or_build_article(params[:merge_with])
-    article = Article.find(article_id)
+    article1 = Article.find(article1_id)
+    article2 = Article.find(article2_id)
     
-    self.body = self.body + article.body
-    self.save
+    a = Article.new
+    a.user_id = article1.user_id
+    a.body = article1.body + article2.body
+    a.title = article1.title
+    a.state = 'published'
+    a.save
     
-    comms = article.comments
-    comms.each do |c|
-      c.article_id = self.id
+    ###comment = {:body => 'content', :author => 'bob', :email => 'bob@home', :url => 'http://bobs.home/'}
+    ###comment = {:body => 'content', :author => 'bob', :email => 'bob@home', :url => 'http://bobs.home/'}
+    ###    post :create, :comment => comment, :article_id => @article.id
+        
+    
+    comments = article1.comments + article2.comments
+    comments.each do |comm|
+      c = Comment.new
+      c.article_id = comm.article_id
+      c.body = comm.body
+      c.author = comm.author
+      c.email = comm.email
+      c.url = comm.url
       c.save
+      comm.destroy
     end
     
-    article.destroy
+    article1.destroy
+    article2.destroy
   end
   
 
