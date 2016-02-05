@@ -415,6 +415,24 @@ class Article < Content
   def access_by?(user)
     user.admin? || user_id == user.id
   end
+  
+  
+  def merge_with article_id
+    #article = Article.get_or_build_article(params[:merge_with])
+    article = Article.find(article_id)
+    
+    self.body = self.body + article.body
+    self.save
+    
+    comms = article.comments
+    comms.each do |c|
+      c.article_id = self.id
+      c.save
+    end
+    
+    article.destroy
+  end
+  
 
   protected
 
@@ -466,4 +484,5 @@ class Article < Content
     to = to - 1 # pull off 1 second so we don't overlap onto the next day
     return from..to
   end
+
 end

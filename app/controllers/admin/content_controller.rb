@@ -149,17 +149,20 @@ class Admin::ContentController < Admin::BaseController
     
     if  params[:article] and params[:article][:merge] 
       if params[:merge_with] and params[:merge_with] != '' and params[:merge_with] != id
-        article = Article.get_or_build_article(params[:merge_with])
-        @article.body += article.body
-        @article.save
         
-        comms = Article.find(article.id).comments
-        comms.each do |c|
-          c.article_id = id
-          c.save
-        end
+        @article.merge_with(params[:merge_with])
         
-        article.destroy
+        # article = Article.get_or_build_article(params[:merge_with])
+        # @article.body += article.body
+        # @article.save
+        
+        # comms = Article.find(article.id).comments
+        # comms.each do |c|
+        #   c.article_id = id
+        #   c.save
+        # end
+        
+        # article.destroy
         
         #flash[:notice] = "Achtung! Minen! Article: " + id + " Merge with: " + params[:merge_with] + s
       else
