@@ -443,7 +443,7 @@ class Article < Content
     a.body = article1.body + article2.body
     a.title = article1.title
     a.state = 'published'
-    a.save
+    a.save!
     
     ###comment = {:body => 'content', :author => 'bob', :email => 'bob@home', :url => 'http://bobs.home/'}
     ###comment = {:body => 'content', :author => 'bob', :email => 'bob@home', :url => 'http://bobs.home/'}
@@ -458,7 +458,7 @@ class Article < Content
       c.author = comm.author
       c.email = comm.email
       c.url = comm.url
-      c.save
+      c.save!
       comm.destroy
     end
     
