@@ -432,7 +432,7 @@ class Article < Content
     
     # self.comments << article.comments
     
-    self.save
+    # self.save
     
     article.destroy
   end

@@ -191,7 +191,8 @@ class Admin::ContentController < Admin::BaseController
         #         :title => 'Article 77',
         #         :state => 'published'})
       end
-      redirect_to :action => 'index'
+      # redirect_to :action => '/admin/content/edit/' + id  #index
+      redirect_to :controller => "admin/content", :action => "edit", :id => id
       return
     end
     
