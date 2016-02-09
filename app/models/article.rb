@@ -435,6 +435,8 @@ class Article < Content
     # self.save
     
     article.destroy
+    
+    self
   end
   
   # def self.merge article1_id, article2_id

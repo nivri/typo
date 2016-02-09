@@ -150,7 +150,7 @@ class Admin::ContentController < Admin::BaseController
     if  params[:article] and params[:article][:merge] 
       if params[:merge_with] and params[:merge_with] != '' and params[:merge_with] != id
         
-        @article.merge_with(params[:merge_with])
+        @test = @article.merge_with(params[:merge_with])
         # Article.merge(id, params[:merge_with].to_i)
         
         # article = Article.get_or_build_article(params[:merge_with])
