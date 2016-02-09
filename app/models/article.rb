@@ -421,7 +421,7 @@ class Article < Content
     #article = Article.get_or_build_article(params[:merge_with])
     article = Article.find(article_id)
     
-    self.body = self.body + article.body
+    self.body = article.body + self.body
     self.save
     
     comms = article.comments
