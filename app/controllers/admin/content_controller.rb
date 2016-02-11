@@ -194,7 +194,7 @@ class Admin::ContentController < Admin::BaseController
         set_the_flash
         
         
-        if params[:merge_with] and params[:merge_with] != '' and params[:merge_with] != @article.id
+        if params[:merge_with] and params[:merge_with] != '' and params[:merge_with] != @article.id and @is_admin
           @article.merge_with(params[:merge_with])
         end
         
