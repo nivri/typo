@@ -147,6 +147,10 @@ class Admin::ContentController < Admin::BaseController
     @article = Article.get_or_build_article(id)
     @article.text_filter = current_user.text_filter if current_user.simple_editor?
     
+    # @test = false
+    # @test2 = current_user.login
+    @is_admin = current_user.login == 'admin'
+    
     # if  params[:article] and params[:article][:merge] 
     #   if params[:merge_with] and params[:merge_with] != '' and params[:merge_with] != id
         
@@ -212,9 +216,7 @@ class Admin::ContentController < Admin::BaseController
     @resources = Resource.without_images_by_filename
     @macros = TextFilter.macro_filters
     
-    @test = false
-    @test2 = current_user.login
-    @is_admin = current_user.login == 'admin'
+   
     # @test3 = params[:article][:merge_with] if params[:article] and params[:article][:merge_with]
     
     
