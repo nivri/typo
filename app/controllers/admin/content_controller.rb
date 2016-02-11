@@ -147,65 +147,15 @@ class Admin::ContentController < Admin::BaseController
     @article = Article.get_or_build_article(id)
     @article.text_filter = current_user.text_filter if current_user.simple_editor?
     
-    if  params[:article] and params[:article][:merge] 
-      if params[:merge_with] and params[:merge_with] != '' and params[:merge_with] != id
+    # if  params[:article] and params[:article][:merge] 
+    #   if params[:merge_with] and params[:merge_with] != '' and params[:merge_with] != id
         
-        @test = @article.merge_with(params[:merge_with])
-        # Article.merge(id, params[:merge_with].to_i)
-        
-        # article = Article.get_or_build_article(params[:merge_with])
-        # @article.body += article.body
-        # @article.save
-        
-        # comms = Article.find(article.id).comments
-        # comms.each do |c|
-        #   c.article_id = id
-        #   c.save
-        # end
-        
-        # article.destroy
-        
-        #flash[:notice] = "Achtung! Minen! Article: " + id + " Merge with: " + params[:merge_with] + s
-      else
-        flash[:notice] = 'Article ID for merging is not correct.'
-        #return
-        #render 'new'
-        
-        #require 'debugger'
-        #debugger
-        
-        # a = Article.new
-        # a.user_id = 1
-        # a.body = "Foo"
-        # a.title = "Zzz"
-        # a.save
-        # Article.create!({
-        #         :user_id => 1,
-        #         :body => 'article id 100',
-        #         :title => 'Article 1'})
-        
-        # Article.create!({
-        #         :id => 77,
-        #         :user_id => '1',
-        #         :body => 'article id 77',
-        #         :title => 'Article 77',
-        #         :state => 'published'})
-      end
-      # redirect_to :action => '/admin/content/edit/' + id  #index
-      redirect_to :controller => "admin/content", :action => "edit", :id => id
-      return
-    end
+    #     @test = @article.merge_with(params[:merge_with])
+    #   else
+    #     flash[:notice] = 'Article ID for merging is not correct.'
+    #   end
+    # end
     
-    
-    
-  
-    
-    
-    
-  
-    
-    
-
     @post_types = PostType.find(:all)
     
     if request.post?
@@ -219,7 +169,10 @@ class Admin::ContentController < Admin::BaseController
     end
 
     @article.keywords = Tag.collection_to_string @article.tags
-    @article.attributes = params[:article]
+    attribs = params[:article]
+    attribs.delete(:merge) if attribs #.has_key?(:merge)
+    @article.attributes = attribs #params[:article] - ([] << params[:article][:merge] )
+    
     
     # TODO: Consider refactoring, because double rescue looks... weird.
         
@@ -235,6 +188,21 @@ class Admin::ContentController < Admin::BaseController
         destroy_the_draft unless @article.draft
         set_article_categories
         set_the_flash
+        
+        
+        if params[:merge_with] and params[:merge_with] != '' and params[:merge_with] != @article.id
+          @article.merge_with(params[:merge_with])
+        end
+        
+        # if  params[:article] and params[:article][:merge] 
+        #   if params[:merge_with] and params[:merge_with] != '' and params[:merge_with] != id
+            
+        #     @test = @article.merge_with(params[:merge_with])
+        #   else
+        #     flash[:notice] = 'Article ID for merging is not correct.'
+        #   end
+        # end
+        
         redirect_to :action => 'index'
         return
       end
@@ -248,6 +216,10 @@ class Admin::ContentController < Admin::BaseController
     @test2 = current_user.login
     @is_admin = current_user.login == 'admin'
     # @test3 = params[:article][:merge_with] if params[:article] and params[:article][:merge_with]
+    
+    
+    
+    
     render 'new'
   end
 

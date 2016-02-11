@@ -419,6 +419,9 @@ class Article < Content
   
   def merge_with article_id
     #article = Article.get_or_build_article(params[:merge_with])
+    #self.reload
+    require 'debugger'
+    # debugger
     article = Article.find(article_id)
     
     self.body = self.body + article.body
@@ -432,13 +435,13 @@ class Article < Content
       self.comments << c
       self.save
       self.reload
-      article.reload
+      # article.reload
     end
     
     # self.comments << article.comments
     
     # self.save
-    
+    article.reload
     article.destroy
     
     self
