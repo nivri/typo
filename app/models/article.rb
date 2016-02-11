@@ -421,13 +421,18 @@ class Article < Content
     #article = Article.get_or_build_article(params[:merge_with])
     article = Article.find(article_id)
     
-    self.body = article.body + self.body
+    self.body = self.body + article.body
     self.save
     
     comms = article.comments
     comms.each do |c|
-      c.article_id = self.id
-      c.save
+      # c.article_id = self.id
+      # c.save
+      
+      self.comments << c
+      self.save
+      self.reload
+      article.reload
     end
     
     # self.comments << article.comments
