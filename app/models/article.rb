@@ -420,7 +420,7 @@ class Article < Content
   def merge_with article_id
     #article = Article.get_or_build_article(params[:merge_with])
     #self.reload
-    require 'debugger'
+    # require 'debugger'
     # debugger
     article = Article.find(article_id)
     
