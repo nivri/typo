@@ -147,18 +147,7 @@ class Admin::ContentController < Admin::BaseController
     @article = Article.get_or_build_article(id)
     @article.text_filter = current_user.text_filter if current_user.simple_editor?
     
-    # @test = false
-    # @test2 = current_user.login
     @is_admin = current_user.login == 'admin'
-    
-    # if  params[:article] and params[:article][:merge] 
-    #   if params[:merge_with] and params[:merge_with] != '' and params[:merge_with] != id
-        
-    #     @test = @article.merge_with(params[:merge_with])
-    #   else
-    #     flash[:notice] = 'Article ID for merging is not correct.'
-    #   end
-    # end
     
     @post_types = PostType.find(:all)
     
@@ -174,9 +163,8 @@ class Admin::ContentController < Admin::BaseController
 
     @article.keywords = Tag.collection_to_string @article.tags
     attribs = params[:article]
-    attribs.delete(:merge) if attribs #.has_key?(:merge)
-    @article.attributes = attribs #params[:article] - ([] << params[:article][:merge] )
-    
+    attribs.delete(:merge) if attribs
+    @article.attributes = attribs
     
     # TODO: Consider refactoring, because double rescue looks... weird.
         
@@ -193,19 +181,9 @@ class Admin::ContentController < Admin::BaseController
         set_article_categories
         set_the_flash
         
-        
         if params[:merge_with] and params[:merge_with] != '' and params[:merge_with] != @article.id and @is_admin
           @article.merge_with(params[:merge_with])
         end
-        
-        # if  params[:article] and params[:article][:merge] 
-        #   if params[:merge_with] and params[:merge_with] != '' and params[:merge_with] != id
-            
-        #     @test = @article.merge_with(params[:merge_with])
-        #   else
-        #     flash[:notice] = 'Article ID for merging is not correct.'
-        #   end
-        # end
         
         redirect_to :action => 'index'
         return
@@ -215,12 +193,6 @@ class Admin::ContentController < Admin::BaseController
     @images = Resource.images_by_created_at.page(params[:page]).per(10)
     @resources = Resource.without_images_by_filename
     @macros = TextFilter.macro_filters
-    
-   
-    # @test3 = params[:article][:merge_with] if params[:article] and params[:article][:merge_with]
-    
-    
-    
     
     render 'new'
   end

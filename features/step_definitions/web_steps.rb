@@ -41,11 +41,51 @@ Given /^the blog is set up$/ do
                 :profile_id => 1,
                 :name => 'admin',
                 :state => 'active'})
+  User.create!({:login => 'user',
+                :password => 'aaaaaaaa',
+                :email => 'user@snow.com',
+                :profile_id => 2,
+                :name => 'user',
+                :state => 'active'})
+end
+
+Given /^there are some articles$/ do
+  
+  @article_1 = Article.create!({
+    #:id => 5,
+    :user_id => '1',
+    :body => 'Article No 1',
+    :title => 'Article 1',
+    :state => 'published'})
+  
+  # require 'debugger'
+  # debugger
+    
+  # Post.new({:id => 10, :title => 'Test'}, :without_protection => true).save
+  @article_2 = Article.create!({
+    #:id => 6,
+    :user_id => '1',
+    :body => 'Article No 2',
+    :title => 'Article 2',
+    :state => 'published'})
+  
 end
 
 And /^I am logged into the admin panel$/ do
   visit '/accounts/login'
   fill_in 'user_login', :with => 'admin'
+  fill_in 'user_password', :with => 'aaaaaaaa'
+  click_button 'Login'
+  if page.respond_to? :should
+    page.should have_content('Login successful')
+  else
+    assert page.has_content?('Login successful')
+  end
+end
+
+And /^I am logged as a blogger$/ do
+  visit '/accounts/login'
+  fill_in 'user_login', :with => 'user'
   fill_in 'user_password', :with => 'aaaaaaaa'
   click_button 'Login'
   if page.respond_to? :should
